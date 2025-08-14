@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Reader - Smart Image Analysis</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-brain"></i>
+                    <h1>AI Image Reader</h1>
+                </div>
+                <p class="subtitle">Smart image analysis with AI-powered categorization</p>
+            </div>
+        </header>
+
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <div class="upload-container" id="uploadContainer">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Upload Images</h3>
+                    <p>Drag and drop images here or click to browse</p>
+                    <p class="file-types">Supports: JPG, PNG, GIF, WebP</p>
+                    <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-folder-open"></i>
+                        Choose Files
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analysis Controls -->
+        <section class="controls-section" id="controlsSection" style="display: none;">
+            <div class="controls-container">
+                <div class="control-group">
+                    <label for="analysisType">Analysis Type:</label>
+                    <select id="analysisType">
+                        <option value="quality">Image Quality Analysis</option>
+                        <option value="content">Content Classification</option>
+                        <option value="object">Object Detection</option>
+                        <option value="custom">Custom Rules</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="threshold">Sensitivity Threshold:</label>
+                    <input type="range" id="threshold" min="0" max="100" value="70">
+                    <span id="thresholdValue">70%</span>
+                </div>
+                <button class="analyze-btn" id="analyzeBtn">
+                    <i class="fas fa-magic"></i>
+                    Analyze Images
+                </button>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" id="resultsSection" style="display: none;">
+            <!-- Grid View -->
+            <div class="view-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-th"></i> Grid View</h2>
+                    <div class="view-controls">
+                        <button class="view-btn active" data-view="grid">
+                            <i class="fas fa-th"></i> Grid
+                        </button>
+                        <button class="view-btn" data-view="rag">
+                            <i class="fas fa-chart-pie"></i> RAG
+                        </button>
+                    </div>
+                </div>
+                <div class="images-grid" id="imagesGrid"></div>
+            </div>
+
+            <!-- RAG View -->
+            <div class="view-section" id="ragSection" style="display: none;">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-pie"></i> RAG Analysis</h2>
+                    <div class="rag-legend">
+                        <div class="legend-item">
+                            <div class="legend-color red"></div>
+                            <span>Red (High Priority)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color amber"></div>
+                            <span>Amber (Medium Priority)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color green"></div>
+                            <span>Green (Low Priority)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rag-container">
+                    <div class="rag-column red-column">
+                        <h3>Red Zone</h3>
+                        <div class="rag-images" id="redImages"></div>
+                    </div>
+                    <div class="rag-column amber-column">
+                        <h3>Amber Zone</h3>
+                        <div class="rag-images" id="amberImages"></div>
+                    </div>
+                    <div class="rag-column green-column">
+                        <h3>Green Zone</h3>
+                        <div class="rag-images" id="greenImages"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics -->
+        <section class="stats-section" id="statsSection" style="display: none;">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon red">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="redCount">0</h3>
+                        <p>Red Items</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon amber">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="amberCount">0</h3>
+                        <p>Amber Items</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="greenCount">0</h3>
+                        <p>Green Items</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-images"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalCount">0</h3>
+                        <p>Total Images</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="modal" id="loadingModal">
+        <div class="modal-content">
+            <div class="loading-spinner"></div>
+            <h3>Analyzing Images...</h3>
+            <p>Please wait while our AI processes your images</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
